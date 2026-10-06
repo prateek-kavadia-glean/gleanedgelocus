@@ -313,7 +313,7 @@ test("server-renders the finished Glean Edge experience", async () => {
     html,
     /href="https:\/\/www\.glean\.com\/blog\/cowork-mcp-eval"/i,
   );
-  assert.equal((html.match(/Go to step \d+,/g) ?? []).length, 9);
+  assert.equal((html.match(/Go to step \d+,/g) ?? []).length, 11);
   assert.doesNotMatch(html, /—|&mdash;|&#8212;/i);
   assert.doesNotMatch(html, /Your site is taking shape|react-loading-skeleton/i);
 });
@@ -346,7 +346,7 @@ for (const removedDraftPath of [
     assert.match(html, /81%[\s\S]*lower[\s\S]*token cost per task\./i);
     assert.match(html, /Glean preferred overall:[\s\S]*78%/i);
     assert.doesNotMatch(html, /proof-row-switcher/i);
-    assert.equal((html.match(/Go to step \d+,/g) ?? []).length, 9);
+    assert.equal((html.match(/Go to step \d+,/g) ?? []).length, 11);
   });
 }
 
@@ -381,7 +381,7 @@ for (const legacyOverviewPath of [
     );
     assert.doesNotMatch(html, /proof-row-switcher/i);
     assert.match(html, /Step 1[\s\S]*Overview/i);
-    assert.equal((html.match(/Go to step \d+,/g) ?? []).length, 9);
+    assert.equal((html.match(/Go to step \d+,/g) ?? []).length, 11);
   });
 }
 
@@ -430,16 +430,30 @@ const selectedLightSteps = [
     variant: "f",
   },
   {
+    path: "/governance",
+    legacyPaths: [],
+    step: "8",
+    label: "Governance",
+    sceneClass: "s-governance",
+  },
+  {
+    path: "/claude-vs-copilot",
+    legacyPaths: [],
+    step: "9",
+    label: "Claude vs Copilot",
+    sceneClass: "s-assistant-comparison",
+  },
+  {
     path: "/beyond-search",
     legacyPaths: ["/page-7b"],
-    step: "8",
+    step: "10",
     label: "Beyond Search",
     sceneClass: "s6",
   },
   {
     path: "/takeaway",
     legacyPaths: ["/page-8b", "/page-9b"],
-    step: "9",
+    step: "11",
     label: "Takeaway",
     sceneClass: "s7",
   },
@@ -482,7 +496,7 @@ for (const selected of selectedLightSteps) {
       html,
       new RegExp(`Step ${selected.step}[\\s\\S]*${selected.label}`, "i"),
     );
-    assert.equal((html.match(/Go to step \d+,/g) ?? []).length, 9);
+    assert.equal((html.match(/Go to step \d+,/g) ?? []).length, 11);
     assert.doesNotMatch(html, /—|&mdash;|&#8212;/i);
     assert.doesNotMatch(
       html,
@@ -510,6 +524,41 @@ for (const selected of selectedLightSteps) {
   });
 }
 
+test("shows source, data, agent, and action governance on the governance slide", async () => {
+  const response = await render("/governance");
+  assert.equal(response.status, 200);
+
+  const html = await response.text();
+  const sceneHtml = extractSceneWrapper(html);
+  assert.match(sceneHtml, /source permissions/i);
+  assert.match(sceneHtml, /document-level permissions/i);
+  assert.match(sceneHtml, /confidential and PII/i);
+  assert.match(sceneHtml, /DLP controls/i);
+  assert.match(sceneHtml, /moderators govern/i);
+  assert.match(sceneHtml, /person confirms/i);
+  assert.match(sceneHtml, /audit trail/i);
+  assert.match(sceneHtml, /One governed workflow/i);
+  assert.match(sceneHtml, /Most connectors to set up/i);
+  assert.match(sceneHtml, /Typical IT involvement/i);
+});
+
+test("compares Claude and Copilot without claiming identical governance", async () => {
+  const response = await render("/claude-vs-copilot");
+  assert.equal(response.status, 200);
+
+  const html = await response.text();
+  const sceneHtml = extractSceneWrapper(html);
+  assert.match(sceneHtml, /Claude/);
+  assert.match(sceneHtml, /Copilot/);
+  assert.match(sceneHtml, /permission-aware, user-relevant context/i);
+  assert.match(sceneHtml, /Glean MCP/i);
+  assert.match(sceneHtml, /sharing hygiene/i);
+  assert.match(sceneHtml, /Confirm the exact plan, tenant/i);
+  assert.match(sceneHtml, /Make Glean the default for broad business work/i);
+  assert.match(sceneHtml, /Do not assume an assistant fixes overshared content/i);
+  assert.doesNotMatch(sceneHtml, /Copilot (?:has nothing|has no controls)/i);
+});
+
 test("renders a trailing-slash route before the client normalizes its URL", async () => {
   const response = await render("/glean-index/");
   assert.equal(response.status, 200);
@@ -520,7 +569,7 @@ test("renders a trailing-slash route before the client normalizes its URL", asyn
   );
 });
 
-test("keeps the updated savings-to-moat transition at step 8", async () => {
+test("keeps the updated savings-to-moat transition at step 10", async () => {
   const response = await render("/beyond-search");
   assert.equal(response.status, 200);
 
@@ -540,7 +589,7 @@ for (const removedRouterPath of ["/model-router"]) {
     const html = await response.text();
     assert.match(html, /Step 1[\s\S]*Overview/i);
     assert.doesNotMatch(html, /class="scene s-router"/i);
-    assert.equal((html.match(/Go to step \d+,/g) ?? []).length, 9);
+    assert.equal((html.match(/Go to step \d+,/g) ?? []).length, 11);
   });
 }
 
@@ -724,7 +773,7 @@ test("starts the narrated video muted while making sound controls clear", () => 
   );
 });
 
-test("shows the expanded provider list and paired resource links on step 8", async () => {
+test("shows the expanded provider list and paired resource links on step 10", async () => {
   const response = await render("/beyond-search");
   assert.equal(response.status, 200);
 
@@ -751,13 +800,13 @@ test("shows the expanded provider list and paired resource links on step 8", asy
   );
 });
 
-test("keeps the SmartContext takeaway copy on the light step 9", async () => {
+test("keeps the SmartContext takeaway copy on the light step 11", async () => {
   const response = await render("/takeaway");
   assert.equal(response.status, 200);
 
   const html = await response.text();
   const sceneHtml = extractSceneWrapper(html);
-  assert.match(html, /Step 9/i);
+  assert.match(html, /Step 11/i);
   assert.match(html, /Takeaway/i);
   assert.match(sceneHtml, /Index first\.[\s\S]*Retrieve precisely\./i);
   assert.match(sceneHtml, /Every token to the LLM is[\s\S]*earned\./i);
@@ -963,12 +1012,16 @@ test("adds the approved efficiency benchmark after the live demo as step 7", asy
 
   const demo = html.indexOf("Go to step 6, Live Demo");
   const benchmark = html.indexOf("Go to step 7, Efficiency Benchmark");
-  const beyond = html.indexOf("Go to step 8, Beyond Search");
-  const takeaway = html.indexOf("Go to step 9, Takeaway");
+  const governance = html.indexOf("Go to step 8, Governance");
+  const comparison = html.indexOf("Go to step 9, Claude vs Copilot");
+  const beyond = html.indexOf("Go to step 10, Beyond Search");
+  const takeaway = html.indexOf("Go to step 11, Takeaway");
   assert.ok(
     demo !== -1 &&
       demo < benchmark &&
-      benchmark < beyond &&
+      benchmark < governance &&
+      governance < comparison &&
+      comparison < beyond &&
       beyond < takeaway,
   );
 });

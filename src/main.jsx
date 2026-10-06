@@ -1,6 +1,7 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import "../app/globals.css";
+import "../app/glean-edge/slides.css";
 import App, { getFromQuery, getRepQuery } from "../app/glean-edge/App.jsx";
 
 createRoot(document.getElementById("root")).render(

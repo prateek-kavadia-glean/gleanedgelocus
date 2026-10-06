@@ -18,6 +18,8 @@ import Scene6Beyond from "./scenes/Scene6Beyond";
 import SceneDemo from "./scenes/SceneDemo";
 import SceneModelEfficiencyApproved from "./scenes/SceneModelEfficiencyApproved";
 import SceneModelFlexibility from "./scenes/SceneModelFlexibility";
+import SceneGovernance from "./scenes/SceneGovernance";
+import SceneAssistantComparison from "./scenes/SceneAssistantComparison";
 import Scene7Takeaway from "./scenes/Scene7Takeaway";
 import VideoPage from "./VideoPage";
 
@@ -115,6 +117,32 @@ const STEPS = [
   },
   {
     step: "8",
+    label: "Governance",
+    variants: [
+      {
+        id: "b",
+        path: "/governance",
+        theme: "light",
+        track: "light",
+        element: <SceneGovernance />,
+      },
+    ],
+  },
+  {
+    step: "9",
+    label: "Claude vs Copilot",
+    variants: [
+      {
+        id: "b",
+        path: "/claude-vs-copilot",
+        theme: "light",
+        track: "light",
+        element: <SceneAssistantComparison />,
+      },
+    ],
+  },
+  {
+    step: "10",
     label: "Beyond Search",
     variants: [
       {
@@ -127,7 +155,7 @@ const STEPS = [
     ],
   },
   {
-    step: "9",
+    step: "11",
     label: "Takeaway",
     variants: [
       {
