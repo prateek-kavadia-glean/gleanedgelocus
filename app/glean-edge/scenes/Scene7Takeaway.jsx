@@ -191,6 +191,8 @@ function LogoMarquee({ rows }) {
   );
 }
 
+const ASSET_BASE_URL = import.meta.env.BASE_URL;
+
 function LogoChip({ logo }) {
   const [iconBroken, setIconBroken] = useState(false);
   const showMono = logo.mono || iconBroken;
@@ -207,7 +209,7 @@ function LogoChip({ logo }) {
         </span>
       ) : (
         <img
-          src={`/customer-logos/${logo.slug}.svg`}
+          src={`${ASSET_BASE_URL}customer-logos/${logo.slug}.svg`}
           alt=""
           className="s7-logo-icon"
           width={22}

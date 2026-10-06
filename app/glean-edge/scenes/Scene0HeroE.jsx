@@ -6,6 +6,8 @@ import { GLEAN_COWORK_BENCHMARK as BENCHMARK } from "../benchmarkStory.jsx";
 import { CUSTOMER_LOGOS } from "../data";
 import HeroHeadline from "./HeroHeadline";
 
+const ASSET_BASE_URL = import.meta.env.BASE_URL;
+
 const MODELS = [
   { label: "OpenAI", highlightColor: "#10a37f" },
   { label: "Anthropic", highlightColor: "#d5795c" },
@@ -192,7 +194,7 @@ export default function Scene0HeroE() {
                 {OPENING_CUSTOMERS.map((logo) => (
                   <span className="s0e-customer-mark" key={logo.name}>
                     <img
-                      src={`/customer-logos/${logo.slug}.svg`}
+                      src={`${ASSET_BASE_URL}customer-logos/${logo.slug}.svg`}
                       alt=""
                       width={18}
                       height={18}

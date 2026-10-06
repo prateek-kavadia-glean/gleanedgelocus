@@ -209,6 +209,7 @@ const LEGACY_PATH_ROUTES = new Map(
     getCanonicalRoute(canonicalPath),
   ]),
 );
+const APP_BASE_URL = import.meta.env.BASE_URL || "/";
 const GLEAN_EMAIL_DOMAIN = "glean.com";
 const GLEAN_EMAIL_LOCAL_PART = /^[a-z0-9]+(?:[._+-][a-z0-9]+)*$/i;
 const AE_EMAIL_SUBJECT = "Question about The Glean Edge";
@@ -289,8 +290,28 @@ function normalizePath(path) {
   return path.replace(/\/+$/, "");
 }
 
-function getRouteMatch(pathname) {
+export function getAppPath(pathname, baseUrl = APP_BASE_URL) {
   const normalizedPath = normalizePath(pathname);
+  const normalizedBase = normalizePath(baseUrl);
+
+  if (normalizedBase === "/") return normalizedPath;
+  if (normalizedPath === normalizedBase) return "/";
+  if (normalizedPath.startsWith(`${normalizedBase}/`)) {
+    return normalizePath(normalizedPath.slice(normalizedBase.length));
+  }
+  return normalizedPath;
+}
+
+export function getHostedPath(path, baseUrl = APP_BASE_URL) {
+  const normalizedPath = normalizePath(path);
+  const normalizedBase = normalizePath(baseUrl);
+
+  if (normalizedBase === "/") return normalizedPath;
+  return `${normalizedBase}${normalizedPath === "/" ? "/" : normalizedPath}`;
+}
+
+function getRouteMatch(pathname) {
+  const normalizedPath = getAppPath(pathname);
   const legacyRoute = LEGACY_PATH_ROUTES.get(normalizedPath);
   if (legacyRoute) return legacyRoute;
 
@@ -327,13 +348,13 @@ function getTrackVariant(stepIndex, track) {
 function writeRoute(route, { replace = false } = {}) {
   const nextVariant = getVariant(route);
   if (!nextVariant || typeof window === "undefined") return;
-  if (normalizePath(window.location.pathname) === nextVariant.path) return;
+  if (getAppPath(window.location.pathname) === nextVariant.path) return;
 
   const method = replace ? "replaceState" : "pushState";
   window.history[method](
     { step: route.stepIndex, variant: nextVariant.id },
     "",
-    getRouteUrl(nextVariant.path, window.location),
+    getRouteUrl(getHostedPath(nextVariant.path), window.location),
   );
 }
 
@@ -411,7 +432,7 @@ function Stepper({ current, onPrev, onNext, onGo }) {
  * @param {{ initialPath?: string, initialFrom?: string | null, initialRep?: string | null }} props
  */
 export default function App(props) {
-  if (normalizePath(props.initialPath) === "/video") {
+  if (getAppPath(props.initialPath) === "/video") {
     return <VideoPage />;
   }
 
@@ -538,7 +559,7 @@ function Presentation({
     window.history.replaceState(
       { step: initialRoute.stepIndex, variant: initialVariant.id },
       "",
-      getRouteUrl(initialVariant.path, window.location),
+      getRouteUrl(getHostedPath(initialVariant.path), window.location),
     );
 
     const onPopState = () => {
@@ -565,7 +586,7 @@ function Presentation({
 
       if (
         !browserRoute ||
-        normalizePath(window.location.pathname) !== getVariant(route).path
+        getAppPath(window.location.pathname) !== getVariant(route).path
       ) {
         writeRoute(route, { replace: true });
       }
@@ -655,7 +676,7 @@ function Presentation({
           <img
             src={
               activeVariant.theme === "light"
-                ? "/favicon.svg"
+                ? `${APP_BASE_URL}favicon.svg`
                 : "https://app.glean.com/images/glean-logo2.svg"
             }
             alt="Glean"

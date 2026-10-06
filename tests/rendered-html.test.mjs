@@ -19,6 +19,8 @@ const {
   getGleanAeContact,
   getGleanContact,
   getRepQuery,
+  getAppPath,
+  getHostedPath,
   getRouteUrl,
   getSceneTransitionMode,
   shouldIgnorePresentationKey,
@@ -128,6 +130,23 @@ test("accepts only well-formed glean.com contact addresses", async () => {
   const html = await response.text();
   assert.doesNotMatch(html, /class="ae-contact-link"/i);
   assert.doesNotMatch(html, /mailto:/i);
+});
+
+test("maps GitHub Pages project URLs to canonical app routes", () => {
+  const baseUrl = "/gleanedgelocus/";
+
+  assert.equal(getAppPath("/gleanedgelocus/", baseUrl), "/");
+  assert.equal(
+    getAppPath("/gleanedgelocus/claude-vs-copilot/", baseUrl),
+    "/claude-vs-copilot",
+  );
+  assert.equal(getAppPath("/elsewhere/route", baseUrl), "/elsewhere/route");
+  assert.equal(getHostedPath("/", baseUrl), "/gleanedgelocus/");
+  assert.equal(
+    getHostedPath("/claude-vs-copilot", baseUrl),
+    "/gleanedgelocus/claude-vs-copilot",
+  );
+  assert.equal(getHostedPath("/demo", "/"), "/demo");
 });
 
 test("keeps the personalization query while moving between routes", () => {

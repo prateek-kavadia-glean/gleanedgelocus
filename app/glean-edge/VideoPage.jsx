@@ -5,9 +5,13 @@
 import { useEffect } from "react";
 import "./VideoPage.css";
 
+const ASSET_BASE = import.meta.env.BASE_URL;
+
 export default function VideoPage() {
   const homeHref =
-    typeof window === "undefined" ? "/" : `/${window.location.search}`;
+    typeof window === "undefined"
+      ? ASSET_BASE
+      : `${ASSET_BASE}${window.location.search}`;
 
   useEffect(() => {
     const previousTitle = document.title;
@@ -21,7 +25,7 @@ export default function VideoPage() {
     <div className="video-page">
       <header className="video-page-header">
         <div className="video-page-brand">
-          <img src="/favicon.svg" alt="" width="32" height="32" />
+          <img src={`${ASSET_BASE}favicon.svg`} alt="" width="32" height="32" />
           <span>The Glean Edge</span>
         </div>
         <a className="video-page-home" href={homeHref}>
@@ -52,14 +56,14 @@ export default function VideoPage() {
             controls
             playsInline
             preload="metadata"
-            poster="/videos/glean-context-poster.jpg"
+            poster={`${ASSET_BASE}videos/glean-context-poster.jpg`}
             width="1280"
             height="720"
             aria-label="Glean context explainer video"
           >
-            <source src="/videos/glean-context.mp4" type="video/mp4" />
+            <source src={`${ASSET_BASE}videos/glean-context.mp4`} type="video/mp4" />
             Your browser does not support embedded video. {" "}
-            <a href="/videos/glean-context.mp4">Watch the video directly.</a>
+            <a href={`${ASSET_BASE}videos/glean-context.mp4`}>Watch the video directly.</a>
           </video>
         </figure>
       </main>

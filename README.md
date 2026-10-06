@@ -44,6 +44,16 @@ Cloudflare Pages limits each asset to 25 MiB. `npm run build` checks every file
 in `dist/` and fails if any asset exceeds that limit. Keep video exports below
 the limit with room for audio and container overhead.
 
+## Deploy to GitHub Pages
+
+The repository project site uses the `/gleanedgelocus/` base path. Set the
+repository Pages source to **GitHub Actions**. The workflow in
+`.github/workflows/pages.yml` builds the site with that base path, creates the
+`404.html` fallback for direct scene and video URLs, and deploys `dist/` on
+pushes to `main`.
+
+For a local GitHub Pages build, run `npm run build:github-pages`.
+
 ## Validate
 
 ```bash

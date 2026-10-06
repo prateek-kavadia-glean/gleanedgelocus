@@ -1,18 +1,22 @@
 import { useCallback, useRef, useState } from "react";
 import { motion } from "framer-motion";
 
+const ASSET_BASE = import.meta.env.BASE_URL;
+
 const CLIP = {
   runtime: "1:24",
   playbackRate: 1,
   speedBadge: "2×",
-  poster: "/videos/glean-vs-claude-nasa-poster.jpg",
-  mp4: "/videos/glean-vs-claude-nasa.mp4",
-  webm: "/videos/glean-vs-claude-nasa.webm",
+  poster: `${ASSET_BASE}videos/glean-vs-claude-nasa-poster.jpg`,
+  mp4: `${ASSET_BASE}videos/glean-vs-claude-nasa.mp4`,
+  webm: `${ASSET_BASE}videos/glean-vs-claude-nasa.webm`,
 };
 
 export default function SceneDemo() {
   const videoHref =
-    typeof window === "undefined" ? "/video" : `/video${window.location.search}`;
+    typeof window === "undefined"
+      ? `${ASSET_BASE}video`
+      : `${ASSET_BASE}video${window.location.search}`;
 
   return (
     <div className="scene s-demo">

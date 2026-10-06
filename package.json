@@ -8,6 +8,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build && node scripts/check-pages-assets.mjs",
+    "build:github-pages": "vite build --base=/gleanedgelocus/ && node scripts/check-pages-assets.mjs && node scripts/create-github-pages-fallback.mjs",
     "start": "vite preview",
     "preview": "vite preview",
     "test": "npm run build && node --test tests/rendered-html.test.mjs",
